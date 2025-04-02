@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Realistic VR Office Simulation</title>
+  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  <style>
+    /* Style the input box */
+    #input-box {
+      position: absolute;
+      top: 500px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      font-size: 18px;
+      padding: 10px 20px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      background-color: #f7f7f7;
+      color: #333;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      width: 60%;
+      max-width: 600px;
+      transition: box-shadow 0.3s ease;
+    }
+
+    /* Style for hover effect on input box */
+    #input-box:focus {
+      outline: none;
+      box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    /* General styling */
+    body, html {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background-color: #eaeaea;
+    }
+
+    /* Style for the main title */
+    .title {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #fff;
+      font-size: 30px;
+      font-weight: bold;
+      text-align: center;
+      z-index: 10;
+      margin-bottom: 20px;
+    }
+
+    /* Style for the task panel */
+    .task-panel {
+      position: absolute;
+      top: 100px;
+      left: 20px;
+      z-index: 10;
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      width: 250px;
+    }
+
+    .task-panel h2 {
+      margin: 0;
+      font-size: 22px;
+      color: #333;
+    }
+
+    .task-panel ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .task-panel ul li {
+      font-size: 16px;
+      padding: 5px 0;
+      color: #555;
+      cursor: pointer;
+    }
+
+    .task-panel ul li:hover {
+      color: #000;
+      text-decoration: underline;
+    }
+
+    /* Certificate Style */
+    #certificate {
+      display: none;
+      background: white;
+      padding: 30px;
+      border: none;
+      border-radius: 20px;
+      width: 600px;
+      height: 420px;
+      text-align: center;
+      position: absolute;
+      top: 44%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      font-family: 'Arial', sans-serif;
+      border-radius: 10px;
+      z-index: 20;
+    }
+
+    #company-logo {
+      width: 80px;
+      margin-bottom: 20px;
+    }
+
+    #certificate .certosc {
+      font-size: 24px;
+      margin: 10px 0;
+      font-weight: bold;
+      color: #333;
+    }
+
+    #certificate p {
+      font-size: 18px;
+      color: #555;
+    }
+
+    #certificate h3 {
+      font-size: 20px;
+      margin: 5px 0;
+      color: #000;
+    }
+
+    #signature-section {
+      margin-top: 40px;
+    }
+
+    #signature-text {
+      margin-top: -10px;
+      font-size: 18px;
+      color: #555;
+    }
+
+    /* Custom styling for the certificate */
+    #student-name {
+      font-size: 22px;
+      color: #000;
+      font-weight: bold;
+    }
+
+    .logoandname{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .orscolor{
+      color: rgb(55, 55, 240);
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Input Box -->
+  <input type="text" id="input-box" placeholder="Enter text for the virtual monitor..." />
+
+  <!-- Task Panel -->
+  <div class="task-panel">
+    <h2>Internship Tasks</h2>
+    <ul id="task-list">
+      <li>Task 1: learn 'HELLOW WORLD' TO THE Machine</li>
+      <li>Task 2: learn 'HEY' to the Machine</li>
+      <li>Task 3: learn 'GOOD MORING' to the Machine</li>
+    </ul>
+  </div>
+
+  <!-- Certificate Section -->
+  <div id="certificate">
+    <div class="logoandname">
+      <img id="company-logo" src="osc.png" alt="Company Logo" />
+      <h2 class="orscolor">Organisation of Southern Cooperation (OSC)</h2>
+    </div>
+    <h2 class="certosc">Certificate of Completion</h2>
+    <p>Presented to:</p>
+    <h3 id="student-name">[Student Name]</h3>
+    <p>For successfully completing the VR Internship at</p>
+    <h3 id="company-name">OSC Virtual Internship Department</h3>
+    <p>Date: <span id="completion-date">[Completion Date]</span></p>
+    <div id="signature-section">
+      <p>_________________________</p>
+      <p id="signature-text">Authorized Signature</p>
+    </div>
+  </div>
+
+  <a-scene shadow="type: pcfsoft" environment="preset: office; groundColor: #4CAF50; skyColor: #87CEEB;">
+    <!-- Assets Management -->
+    <a-assets>
+      <!-- Preload Images -->
+      <img id="wall-lamp-texture" src="image/2306.i203.010.S.m004.c13.hanging-wall-interior-lamps-realistic.jpg">
+      <img id="floor-texture" src="image/2145.jpg">
+      <img id="wall1-texture" src="image/3d-rendering-minimalist-interior-with-copy-space.jpg">
+      <img id="wall2-texture" src="image/4734.jpg">
+      <img id="carpet-texture" src="image/illustrationimg.png">
+      <img id="osc-logo" src="osc.png">
+    </a-assets>
+
+    <!-- Camera with Movement Controls -->
+    <a-entity camera position="0 1.6 5" look-controls wasd-controls></a-entity>
+
+    <!-- Lighting -->
+    <a-light type="ambient" intensity="0.3"></a-light>
+    <a-light type="directional" position="5 10 7.5" intensity="1" castShadow="true"></a-light>
+    <a-light type="spot" position="-5 10 5" angle="30" penumbra="0.5" intensity="0.7" castShadow="true"></a-light>
+
+    <!-- Floor -->
+    <a-plane rotation="-90 0 0" width="20" height="20" src="#floor-texture" repeat="4 4" material="roughness: 0; metalness: 0;"></a-plane>
+
+    <!-- Walls -->
+    <a-box position="0 5 -10" width="20" height="10" depth="0.5" src="image/3d-rendering-minimalist-interior-with-copy-space.jpg" material="side: double;"></a-box>
+    <a-box position="0 5 10" width="20" height="10" depth="0.5" src="image/4734.jpg" material="side: double;"></a-box>
+    <a-box position="-10 5 0" width="0.5" height="10" depth="20" src="image/2306.i203.010.S.m004.c13.hanging wall interior lamps realistic.jpg" material="side: double;"></a-box>
+    <a-box position="10 5 0" width="0.5" height="10" depth="20" src="image/2306.i203.010.S.m004.c13.hanging wall interior lamps realistic.jpg" material="side: double;"></a-box>
+   
+    <!-- Ceiling -->
+    <a-plane rotation="90 0 0" width="20" height="20" color="#ffffff" material="side: double;"></a-plane>
+
+    <!-- Company Logo and Name on Wall -->
+    <a-entity position="0 3 -4.8">
+      <a-image src="#osc-logo" width="2" height="2" position="-4 2 0"></a-image>
+      <a-text value="OSC Virtual Internship Department" color="#000" width="6" position="0 2.5 0" align="center" font="https://cdn.aframe.io/fonts/mozillavr.fnt"></a-text>
+    </a-entity>
+
+    <!-- Desk -->
+    <a-box position="0 1.2 -3" width="3.7" height="0.2" depth="1.5" color="#654321" shadow></a-box>
+
+    <!-- Chair -->
+    <a-box position="0 0.5 -3.5" width="2.5" height="1.1" depth="0.5" color="#000000" shadow></a-box>
+    <a-cylinder position="0 1.0 -3.5" radius="0.25" height="0.1" color="#333333" shadow></a-cylinder>
+
+    <!-- Desktop Monitor -->
+    <a-plane id="monitor" position="0 1.8 -2.3" width="1.2" height="0.7" color="#000000" material="emissive: #222; emissiveIntensity: 0.5;" shadow></a-plane>
+    <a-text id="text-display" value="Your text will appear here..." color="#FFFFFF" width="1.1" align="center" position="0 0 0.05"></a-text>
+
+    <!-- Keyboard -->
+    <a-box id="keyboard" position="0 1.5 -2.3" width="1.3" height="0.1" depth="0.6" color="#555555" shadow>
+      <a-text value="Type Here" color="#FFFFFF" width="1.2" align="center" position="0 0 0.06"></a-text>
+    </a-box>
+
+    <!-- Laptop -->
+    <a-box id="laptop-base" position="1.5 1.3 -2.3" width="0.8" height="0.05" depth="0.5" color="#999999" shadow></a-box>
+    <a-plane id="laptop-screen" position="1.5 1.6 -2.05" width="0.75" height="0.4" color="#222222" material="emissive: #222; emissiveIntensity: 0.3;" shadow></a-plane>
+
+    <!-- Shelves -->
+    <a-box position="4 2.5 -5" width="0.5" height="3" depth="2" color="#8B4513" shadow></a-box>
+    <a-box position="4 3.5 -5" width="0.4" height="0.4" depth="1.8" color="#FFFFFF" shadow></a-box>
+    <!-- Add books or decorative items on shelves as needed -->
+
+    <!-- Decorations -->
+    <a-text value="Welcome to Your Virtual Office" color="#000" position="0 4.5 -4" align="center" width="6" font="https://cdn.aframe.io/fonts/mozillavr.fnt"></a-text>
+
+    <!-- Interactive Elements -->
+    <a-entity id="interactive-desktop" position="0 1.8 -2.3" geometry="primitive: plane; width:1.2; height:0.7" material="color: #000; opacity: 0.8" class="clickable">
+      <a-text id="display-text" value="Your text will appear here..." color="#FFF" align="center" position="0 0 0.01" width="1.1"></a-text>
+    </a-entity>
+
+    <a-entity id="interactive-keyboard" position="0 1.4 -1.0" geometry="primitive: box; width:1.3; height:0.1; depth:0.6" material="color: #fff" class="clickable">
+      <a-text value="Type Here" color="#FFF" align="center" position="0 0 0.06" width="1.2"></a-text>
+    </a-entity>
+
+    <!-- Floor Decorations (Carpet) -->
+    <a-plane position="0 0.01 -3" rotation="-90 0 0" width="3" height="3" src="#carpet-texture" repeat="5 5" material="roughness: 1; metalness: 0;"></a-plane>
+  </a-scene>
+
+  <script>
+    // Capture user input and display it on the virtual monitor
+    const inputBox = document.getElementById("input-box");
+    const monitorText = document.getElementById("text-display");
+    const displayText = document.getElementById("display-text");
+
+    inputBox.addEventListener("input", () => {
+      const text = inputBox.value || "Your text will appear here...";
+      monitorText.setAttribute("value", text);
+      displayText.setAttribute("value", text);
+    });
+
+    // List of tasks with a 'completed' property
+    const tasks = [
+      { id: 1, task: "Task 1: learn 'HELLOW WORLD' TO THE Machine", completed: false, key: '1' },
+      { id: 2, task: "Task 1: learn 'HEY' TO THE Machine", completed: false, key: '2' },
+      { id: 3, task: "Task 1: learn 'GOOD MORING' TO THE Machine", completed: false, key: '3' }
+    ];
+
+    // Rendering tasks in the task panel
+    function renderTasks() {
+      const taskList = document.getElementById('task-list');
+      taskList.innerHTML = '';  // Clear previous tasks
+
+      tasks.forEach(task => {
+        const taskItem = document.createElement('li');
+        taskItem.textContent = `${task.task} (Press ${task.key})`;
+
+        // If task is completed, show line-through
+        if (task.completed) {
+          taskItem.style.textDecoration = 'line-through';
+          taskItem.style.color = '#28a745';
+        }
+
+        // When task is clicked, mark it as completed
+        taskItem.addEventListener('click', () => completeTask(task.id));
+
+        taskList.appendChild(taskItem);
+      });
+    }
+
+    // Mark a task as completed and re-render the task list
+    function completeTask(taskId) {
+      const task = tasks.find(t => t.id === taskId);
+      if (!task.completed) {
+        task.completed = true;  // Mark task as completed
+        alert(`Task Completed: ${task.task}`);
+        playEffect();  // Trigger animation or sound effect
+        renderTasks();  // Re-render tasks with updated status
+        setTimeout(checkCompletion, 300);  // Add a slight delay before checking for completion
+      }
+    }
+
+    // Check if all tasks are completed
+    function checkCompletion() {
+      if (tasks.every(t => t.completed)) {
+        // Display certificate after 500ms delay
+        setTimeout(() => {
+          displayCertificate('Mehammednur Hashim Shafi'); 
+          alert("Congratulations! All tasks are completed!");
+        }, 500);  // Delay for visibility
+      }
+    }
+
+    // Handle key presses for task completion
+    function handleKeyPress(event) {
+      const key = event.key;
+      const task = tasks.find(t => t.key === key);  // Find the task associated with the key pressed
+
+      if (task) {
+        completeTask(task.id);  // Complete the task associated with the key
+      }
+    }
+
+    // Play effect (animation or sound) when a task is completed
+    function playEffect() {
+      // Play sound effect (ensure the audio file exists or replace with a valid URL)
+      const audio = new Audio('https://www.soundjay.com/buttons/sounds/button-3.mp3');
+      audio.play();
+
+      // Example: Add animation (flicker the background)
+      document.body.style.backgroundColor = '#d4edda';  // Success green
+      setTimeout(() => {
+        document.body.style.backgroundColor = '';  // Reset background color after a delay
+      }, 500);
+
+      // Update virtual screen on task completion
+      const monitor = document.getElementById('monitor');
+      monitor.setAttribute('material', 'color', '#000'); // Change screen color
+
+      // Reset monitor color after a short duration
+      setTimeout(() => {
+        monitor.setAttribute('material', 'color', '#000000');
+      }, 500);
+    }
+
+    // Display certificate with dynamic data
+    function displayCertificate(studentName) {
+      document.getElementById('certificate').style.display = 'block';
+      document.getElementById('student-name').textContent = studentName;
+      document.getElementById('completion-date').textContent = new Date().toLocaleDateString();
+      document.getElementById('signature-text').textContent = 'Authorized Signature';
+    }
+
+    // Add event listener for keydown to trigger task completion by key
+    document.addEventListener('keydown', handleKeyPress);
+
+    // Initial rendering of tasks when the page loads
+    renderTasks();
+
+    // === Laptop Display: Current Date, Time, and OSC Logo ===
+
+    // Ensure Three.js is available
+    if (AFRAME.utils.device.checkHeadsetConnected()) {
+      console.warn("Headset connected. Make sure to test desktop interactions.");
+    }
+
+    // Get the laptop screen entity
+    const laptopScreen = document.getElementById('laptop-screen');
+
+    // Create a canvas to draw dynamic content
+    const canvas = document.createElement('canvas');
+    canvas.width = 1024;  // Adjust resolution as needed
+    canvas.height = 512;  // Adjust resolution as needed
+    const ctx = canvas.getContext('2d');
+
+    // Load OSC Logo Image from a-assets
+    const oscLogo = document.getElementById('osc-logo');
+
+    // Function to draw on the canvas
+    function drawLaptopDisplay() {
+      // Clear the canvas
+      ctx.fillStyle = '#000000';  // Background color matching the laptop screen
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Draw the OSC Logo
+      if (oscLogo.complete) {
+        const logoWidth = 200;
+        const logoHeight = 200;
+        ctx.drawImage(oscLogo, 50, 50, logoWidth, logoHeight);
+      } else {
+        oscLogo.onload = () => {
+          const logoWidth = 200;
+          const logoHeight = 200;
+          ctx.drawImage(oscLogo, 50, 50, logoWidth, logoHeight);
+        };
+      }
+
+      // Set text properties
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = '48px Arial';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+
+      // Get current time and date
+      const now = new Date();
+      const time = now.toLocaleTimeString();
+      const date = now.toLocaleDateString();
+
+      // Draw Time and Date
+      ctx.fillText(`Time: ${time}`, 300, 100);
+      ctx.fillText(`Date: ${date}`, 300, 200);
+    }
+
+    // Initial draw
+    drawLaptopDisplay();
+
+    // Update the canvas every second
+    setInterval(() => {
+      drawLaptopDisplay();
+      // Update the texture
+      laptopTexture.needsUpdate = true;
+    }, 1000);
+
+    // Create a texture from the canvas
+    const laptopTexture = new THREE.CanvasTexture(canvas);
+    laptopTexture.needsUpdate = true;
+
+    // Set the texture to the laptop screen
+    laptopScreen.setAttribute('material', 'src', laptopTexture);
+
+  </script>
+</body>
+</html>
